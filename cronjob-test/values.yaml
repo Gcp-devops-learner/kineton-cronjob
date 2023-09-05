@@ -1,0 +1,24 @@
+name: cron-runner
+saName: sa-cron-runner
+scaleUpCronJobName: scale-up-job 
+scaleDownCronJobName: scale-down-job
+kubernetesClusterDomain: cluster.local
+saCronRunner:
+  serviceAccount:
+    annotations: {}
+scaleDownJob:
+  failedJobsHistoryLimit: 1
+  scaleDownJob:
+    image:
+      repository: bitnami/kubectl
+      tag: latest
+  schedule: 00 14 * * *
+  successfulJobsHistoryLimit: 0
+scaleUpJob:
+  failedJobsHistoryLimit: 1
+  scaleUpJob:
+    image:
+      repository: bitnami/kubectl
+      tag: latest
+  schedule: 15 13 * * *
+  successfulJobsHistoryLimit: 0

@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: scale-up-job
+spec:
+  schedule: "15 13 * * *"
+  successfulJobsHistoryLimit: 0 
+  failedJobsHistoryLimit: 1 
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: sa-cron-runner
+          containers:
+          - name: scale-up-job
+            image: bitnami/kubectl:latest
+            command:
+            - /bin/sh
+            - -c
+            - kubectl patch hpa kamp --patch '{"spec":{"minReplicas":50}}'
+          restartPolicy: OnFailure

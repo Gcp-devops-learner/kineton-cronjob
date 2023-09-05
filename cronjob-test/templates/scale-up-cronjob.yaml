@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Values.scaleUpCronJobName }}
+spec:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: {{ .Values.scaleUpJob.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - command:
+            - /bin/sh
+            - -c
+            - kubectl patch hpa kamp --patch {"spec":{"minReplicas":50}}
+            image: {{ .Values.scaleUpJob.scaleUpJob.image.repository }}:{{ .Values.scaleUpJob.scaleUpJob.image.tag
+              | default .Chart.AppVersion }}
+            name: scale-up-job
+            resources: {}
+          restartPolicy: OnFailure
+          serviceAccountName: {{ .Values.saName }}
+  schedule: {{ .Values.scaleUpJob.schedule | quote }}
+  successfulJobsHistoryLimit: {{ .Values.scaleUpJob.successfulJobsHistoryLimit }}

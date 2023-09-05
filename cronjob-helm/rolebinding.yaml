@@ -1,0 +1,12 @@
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: cron-runner
+subjects:
+- kind: ServiceAccount
+  name: sa-cron-runner
+    # namespace: production
+roleRef:
+  kind: Role
+  name: cron-runner
+  apiGroup: rbac.authorization.k8s.io
