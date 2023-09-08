@@ -3,22 +3,22 @@ kind: CronJob
 metadata:
   name: {{ .Values.scaleUpCronJobName }}
 spec:
-  concurrencyPolicy: Forbid
+  schedule: {{ .Values.scaleUpJob.schedule | quote }}
+  successfulJobsHistoryLimit: {{ .Values.scaleUpJob.successfulJobsHistoryLimit }}
   failedJobsHistoryLimit: {{ .Values.scaleUpJob.failedJobsHistoryLimit }}
+  concurrencyPolicy: Forbid
   jobTemplate:
     spec:
       template:
         spec:
+          serviceAccountName: {{ .Values.saName }}
           containers:
-          - command:
+          - name: scale-up-job
+            image: {{ .Values.scaleUpJob.scaleUpJob.image.repository }}
+            command:
             - /bin/sh
             - -c
-            - kubectl patch hpa kamp --patch {"spec":{"minReplicas":50}}
-            image: {{ .Values.scaleUpJob.scaleUpJob.image.repository }}:{{ .Values.scaleUpJob.scaleUpJob.image.tag
-              | default .Chart.AppVersion }}
-            name: scale-up-job
-            resources: {}
+            - kubectl patch hpa kamp --patch '{"spec":{"minReplicas":50}}'
           restartPolicy: OnFailure
-          serviceAccountName: {{ .Values.saName }}
-  schedule: {{ .Values.scaleUpJob.schedule | quote }}
-  successfulJobsHistoryLimit: {{ .Values.scaleUpJob.successfulJobsHistoryLimit }}
+        
+  

@@ -10,15 +10,15 @@ scaleDownJob:
   failedJobsHistoryLimit: 1
   scaleDownJob:
     image:
-      repository: bitnami/kubectl
+      repository: bitnami/kubectl:latest
       tag: latest
-  schedule: 00 14 * * *
+  schedule: 21 3 * * *
   successfulJobsHistoryLimit: 0
 scaleUpJob:
   failedJobsHistoryLimit: 1
   scaleUpJob:
     image:
-      repository: bitnami/kubectl
+      repository: bitnami/kubectl:latest
       tag: latest
-  schedule: 15 13 * * *
+  schedule: 17 3 * * *
   successfulJobsHistoryLimit: 0
